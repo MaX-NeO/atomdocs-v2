@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
-import { Table } from '@tiptap/extension-table';
+import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
@@ -33,6 +33,9 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  Trash2,
+  Plus,
+  Minus,
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -77,6 +80,8 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
       }),
       Table.configure({
         resizable: true,
+        lastColumnResizable: false,
+        allowTableNodeSelection: true,
         HTMLAttributes: {
           class: 'border-collapse table-auto w-full',
         },
@@ -131,6 +136,35 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
     }
   };
 
+  const deleteTable = () => {
+    if (confirm('Are you sure you want to delete this table?')) {
+      editor.chain().focus().deleteTable().run();
+    }
+  };
+
+  const addColumnBefore = () => {
+    editor.chain().focus().addColumnBefore().run();
+  };
+
+  const addColumnAfter = () => {
+    editor.chain().focus().addColumnAfter().run();
+  };
+
+  const deleteColumn = () => {
+    editor.chain().focus().deleteColumn().run();
+  };
+
+  const addRowBefore = () => {
+    editor.chain().focus().addRowBefore().run();
+  };
+
+  const addRowAfter = () => {
+    editor.chain().focus().addRowAfter().run();
+  };
+
+  const deleteRow = () => {
+    editor.chain().focus().deleteRow().run();
+  };
   const setTextColor = (color: string) => {
     editor.chain().focus().setColor(color).run();
   };
@@ -280,6 +314,100 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
         <Button type="button" variant="ghost" size="sm" onClick={addTable}>
           <TableIcon className="h-4 w-4" />
         </Button>
+        
+        {editor.isActive('table') && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button type="button" variant="ghost" size="sm" className="bg-accent">
+                <TableIcon className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-3" align="start">
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-medium text-sm mb-2">Columns</h4>
+                  <div className="flex gap-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addColumnBefore}
+                      className="flex-1"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Before
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addColumnAfter}
+                      className="flex-1"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      After
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={deleteColumn}
+                    >
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium text-sm mb-2">Rows</h4>
+                  <div className="flex gap-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addRowBefore}
+                      className="flex-1"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Before
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addRowAfter}
+                      className="flex-1"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      After
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={deleteRow}
+                    >
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={deleteTable}
+                  className="w-full"
+                >
+                  <Trash2 className="h-3 w-3 mr-1" />
+                  Delete Table
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
         
         <Separator orientation="vertical" className="h-6" />
         
