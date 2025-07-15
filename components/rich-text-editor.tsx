@@ -11,6 +11,7 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
+import { ButtonExtension } from './button-extension';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -36,6 +37,7 @@ import {
   Trash2,
   Plus,
   Minus,
+  MousePointer,
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -97,6 +99,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
           class: 'border border-border p-2',
         },
       }),
+      ButtonExtension,
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -165,6 +168,19 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const deleteRow = () => {
     editor.chain().focus().deleteRow().run();
   };
+
+  const addButton = () => {
+    const text = window.prompt('Enter button text:', 'Click me') || 'Button';
+    const url = window.prompt('Enter URL (optional):') || '';
+    
+    editor.chain().focus().setButton({
+      text,
+      url,
+      variant: 'default',
+      size: 'default',
+    }).run();
+  };
+
   const setTextColor = (color: string) => {
     editor.chain().focus().setColor(color).run();
   };
@@ -313,6 +329,9 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
         </Button>
         <Button type="button" variant="ghost" size="sm" onClick={addTable}>
           <TableIcon className="h-4 w-4" />
+        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={addButton}>
+          <MousePointer className="h-4 w-4" />
         </Button>
         
         {editor.isActive('table') && (
